@@ -1,0 +1,24 @@
+name: CI
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Environment sync
+        run: |
+          set -euo pipefail
+          OUT=ci-sync.txt
+          : > "$OUT"
+          echo sync=ok >> "$OUT"
+          sort -o "$OUT" "$OUT" || true
+          cat "$OUT"
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: ci-sync.txt
+          retention-days: 1
